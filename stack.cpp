@@ -1,36 +1,37 @@
 #include "stack.h"
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 void stack_init(Stack* s, int capacity){
-    s->data = new int[capacity];
+    s->data = new std::string[capacity];  // Выделяем массив строк
     s->capacity = capacity;
-    s->top = -1;        // -1 Стек пуст
+    s->top = -1;
 }
 
-void stack_push(Stack* s, int value){
-    if (s->top >= s->capacity - 1){     // На переполнение 
-        int new_capacity = s->capacity * 2;     // X2 
-        int* new_data = new int[new_capacity];  
-        for (int i = 0; i <= s->top; i++) new_data[i] = s->data[i]; 
-        delete[] s->data;   
-        s->data = new_data; 
+void stack_push(Stack* s, const std::string& value){  // Принимаем строку
+    if (s->top >= s->capacity - 1){
+        int new_capacity = s->capacity * 2;
+        std::string* new_data = new std::string[new_capacity];  // Новый массив строк
+        for (int i = 0; i <= s->top; i++) new_data[i] = s->data[i];
+        delete[] s->data;
+        s->data = new_data;
         s->capacity = new_capacity;
     }
-    s->data[++s->top] = value;
+    s->data[++s->top] = value;  // Сохраняем строку
 }
 
-int stack_pop(Stack* s){        // Извлечение верхнего элемента 
+std::string stack_pop(Stack* s){  // Возвращаем строку
     if (s->top == -1) throw std::runtime_error("Stack is empty");
     return s->data[s->top--];
 }
 
-int stack_peek(Stack* s){       // Верхний элемент без извлечения 
+std::string stack_peek(Stack* s){  // Возвращаем строку
     if (s->top == -1) throw std::runtime_error("Stack is empty");
     return s->data[s->top];
 }
 
-bool stack_empty(Stack* s){ return s->top == -1; }      // Проверка на пустоту 
+bool stack_empty(Stack* s){ return s->top == -1; }
 
 void stack_free(Stack* s){
     delete[] s->data;

@@ -1,62 +1,63 @@
 #include "doubly_list.h"
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 void dl_init(DoublyList* list){
-    list->head = list->tail = nullptr;      // Обнуляем показатели 
+    list->head = list->tail = nullptr;
 }
 
-void dl_add_head(DoublyList* list, int value){
-    DNode* newNode = new DNode{value, nullptr, nullptr};    // Новый узел
-    if (!list->head) list->head = list->tail = newNode;     // Если пуст
+void dl_add_head(DoublyList* list, const std::string& value){  // Принимаем строку
+    DNode* newNode = new DNode{value, nullptr, nullptr};  // Создаем узел со строкой
+    if (!list->head) list->head = list->tail = newNode;
     else {
-        newNode->next = list->head;     // Новый узел на старую голову 
-        list->head->prev = newNode;     // Старая голова на новый узел 
-        list->head = newNode;       // Обновляем голову на newNode
+        newNode->next = list->head;
+        list->head->prev = newNode;
+        list->head = newNode;
     }
 }
 
-void dl_add_tail(DoublyList* list, int value){
-    DNode* newNode = new DNode{value, nullptr, nullptr};
+void dl_add_tail(DoublyList* list, const std::string& value){  // Принимаем строку
+    DNode* newNode = new DNode{value, nullptr, nullptr};  // Создаем узел со строкой
     if (!list->tail) list->head = list->tail = newNode;
     else {
-        newNode->prev = list->tail;     // Новый указывает на старый 
-        list->tail->next = newNode;     // Старый хвост на новый 
-        list->tail = newNode;       // Обновляем хвост на новый node 
+        newNode->prev = list->tail;
+        list->tail->next = newNode;
+        list->tail = newNode;
     }
 }
 
-void dl_add_before(DoublyList* list, int target, int value){
+void dl_add_before(DoublyList* list, const std::string& target, const std::string& value){  // Принимаем строки
     if (!list->head) throw std::runtime_error("List is empty");
     DNode* current = list->head;
-    while (current && current->data != target) current = current->next;     // Ищем таргет 
+    while (current && current->data != target) current = current->next;  // Сравниваем строки
     if (!current) throw std::runtime_error("Target not found");
-    DNode* newNode = new DNode{value, nullptr, nullptr};
-    newNode->prev = current->prev;      // Новый узел указывает на предыдущий от current
-    newNode->next = current;        // Новый узел указывает на current
-    if (current->prev) current->prev->next = newNode;   // Обновляем следующий 
-    else list->head = newNode;      // Обновляем голову 
-    current->prev = newNode;        // Новый узел 
+    DNode* newNode = new DNode{value, nullptr, nullptr};  // Создаем узел со строкой
+    newNode->prev = current->prev;
+    newNode->next = current;
+    if (current->prev) current->prev->next = newNode;
+    else list->head = newNode;
+    current->prev = newNode;
 }
 
-void dl_add_after(DoublyList* list, int target, int value){
+void dl_add_after(DoublyList* list, const std::string& target, const std::string& value){  // Принимаем строки
     if (!list->head) throw std::runtime_error("List is empty");
     DNode* current = list->head;
-    while (current && current->data != target) current = current->next;
+    while (current && current->data != target) current = current->next;  // Сравниваем строки
     if (!current) throw std::runtime_error("Target not found");
-    DNode* newNode = new DNode{value, nullptr, nullptr};
-    newNode->next = current->next;      // Новый указывает на то, что после сurrent
-    newNode->prev = current;        // Новый указывает на current
-    if (current->next) current->next->prev = newNode;       // Если после current был другой, обновляем его prev
-    else list->tail = newNode; 
+    DNode* newNode = new DNode{value, nullptr, nullptr};  // Создаем узел со строкой
+    newNode->next = current->next;
+    newNode->prev = current;
+    if (current->next) current->next->prev = newNode;
+    else list->tail = newNode;
     current->next = newNode;
 }
 
 void dl_remove_head(DoublyList* list){
     if (!list->head) throw std::runtime_error("List is empty");
-    DNode* temp = list->head;       // Временная для головы 
-    list->head = list->head->next;      // Перемещаем голову на след элемент
-    if (list->head) list->head->prev = nullptr;     // обнуляем prev новой головы 
+    DNode* temp = list->head;
+    list->head = list->head->next;
+    if (list->head) list->head->prev = nullptr;
     else list->tail = nullptr;
     delete temp;
 }
@@ -70,22 +71,22 @@ void dl_remove_tail(DoublyList* list){
     delete temp;
 }
 
-void dl_remove_value(DoublyList* list, int value){
+void dl_remove_value(DoublyList* list, const std::string& value){  // Принимаем строку
     if (!list->head) throw std::runtime_error("List is empty");
     DNode* current = list->head;
-    while (current && current->data != value) current = current->next;
+    while (current && current->data != value) current = current->next;  // Сравниваем строки
     if (!current) throw std::runtime_error("Value not found");
-    if (current->prev) current->prev->next = current->next;     // Пропускаем 
-    else list->head = current->next;        // Удаляем голову 
-    if (current->next) current->next->prev = current->prev;     // Пропускаем
-    else list->tail = current->prev;        // Уддаляем хвост 
+    if (current->prev) current->prev->next = current->next;
+    else list->head = current->next;
+    if (current->next) current->next->prev = current->prev;
+    else list->tail = current->prev;
     delete current;
 }
 
-bool dl_find(DoublyList* list, int value){
+bool dl_find(DoublyList* list, const std::string& value){  // Принимаем строку
     DNode* current = list->head;
     while (current){
-        if (current->data == value) return true;
+        if (current->data == value) return true;  // Сравниваем строки
         current = current->next;
     }
     return false;
@@ -94,7 +95,7 @@ bool dl_find(DoublyList* list, int value){
 void dl_print_forward(DoublyList* list){
     DNode* current = list->head;
     while (current){
-        std::cout << current->data << " ";
+        std::cout << current->data << " ";  // Выводим строку
         current = current->next;
     }
     std::cout << std::endl;
@@ -103,7 +104,7 @@ void dl_print_forward(DoublyList* list){
 void dl_print_backward(DoublyList* list){
     DNode* current = list->tail;
     while (current){
-        std::cout << current->data << " ";
+        std::cout << current->data << " ";  // Выводим строку
         current = current->prev;
     }
     std::cout << std::endl;

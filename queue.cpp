@@ -1,31 +1,32 @@
 #include "queue.h"
 #include <iostream>
 #include <stdexcept>
+#include <string> 
 
 void queue_init(Queue* q){
     q->front = q->rear = nullptr;
 }
 
-void queue_enqueue(Queue* q, int value){
-    QNode* newNode = new QNode{value, nullptr};
-    if (!q->rear) q->front = q->rear = newNode;     // Пуста -> начало и конец одно и то же 
+void queue_enqueue(Queue* q, const std::string& value){  // Принимаем строку
+    QNode* newNode = new QNode{value, nullptr};  // Создаем узел со строкой
+    if (!q->rear) q->front = q->rear = newNode;
     else {
-        q->rear->next = newNode;        // Старый последний --> на новый
+        q->rear->next = newNode;
         q->rear = newNode;
     }
 }
 
-int queue_dequeue(Queue* q){
+std::string queue_dequeue(Queue* q){  // Возвращаем строку
     if (!q->front) throw std::runtime_error("Queue is empty");
-    QNode* temp = q->front;     // Временное сохранение 1 узла в очереди 
-    int value = temp->data;
-    q->front = q->front->next;      // Сдвиг влево
+    QNode* temp = q->front;
+    std::string value = temp->data;  // Получаем строку
+    q->front = q->front->next;
     if (!q->front) q->rear = nullptr;
     delete temp;
     return value;
 }
 
-int queue_peek(Queue* q){
+std::string queue_peek(Queue* q){  // Возвращаем строку
     if (!q->front) throw std::runtime_error("Queue is empty");
     return q->front->data;
 }

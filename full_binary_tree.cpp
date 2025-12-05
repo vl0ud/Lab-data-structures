@@ -1,6 +1,7 @@
 #include "full_binary_tree.h"
 #include <iostream>
 #include <stdexcept>
+#include <string>  // Добавлен для использования строк
 
 void fbt_init(FullBinaryTree* tree){ tree->root = nullptr; }
 
@@ -16,16 +17,16 @@ int count_nodes(TreeNode* root){
     return 1 + count_nodes(root->left) + count_nodes(root->right);
 }
 
-TreeNode* insert_helper(TreeNode* root, int value, int index, int target_index){
+TreeNode* insert_helper(TreeNode* root, const std::string& value, int index, int target_index){  // Принимаем строку
     if (!root){
         if (index == target_index){
-            return new TreeNode{value, nullptr, nullptr};
+            return new TreeNode{value, nullptr, nullptr};  // Создаем узел со строкой
         }
         return nullptr;
     }
     
     if (index == target_index){
-        root->data = value;
+        root->data = value;  // Устанавливаем строку
         return root;
     }
     
@@ -44,16 +45,16 @@ TreeNode* insert_helper(TreeNode* root, int value, int index, int target_index){
     return nullptr;
 }
 
-TreeNode* fbt_insert(TreeNode* root, int value){        // Функция вставки
-    if (!root) return new TreeNode{value, nullptr, nullptr};
+TreeNode* fbt_insert(TreeNode* root, const std::string& value){  // Принимаем строку
+    if (!root) return new TreeNode{value, nullptr, nullptr};  // Создаем корень со строкой
     
     int node_count = count_nodes(root);
     return insert_helper(root, value, 0, node_count);
 }
 
-bool fbt_search(TreeNode* root, int value){     // Рекурсивный поиск 
+bool fbt_search(TreeNode* root, const std::string& value){  // Принимаем строку
     if (!root) return false;
-    if (root->data == value) return true;
+    if (root->data == value) return true;  // Сравниваем строки
     return fbt_search(root->left, value) || fbt_search(root->right, value);
 }
 
@@ -64,11 +65,44 @@ bool fbt_is_full(TreeNode* root){
     return false;
 }
 
-void fbt_print_inorder(TreeNode* root){     // Симметричный обход
+void print_tree_helper(TreeNode* root, const std::string& prefix, bool is_left){
+    if (!root) return;
+    
+    std::cout << prefix;
+    std::cout << (is_left ? "├──" : "└──");
+    
+    // Вывод значения узла (строки)
+    std::cout << root->data << std::endl;
+    
+    // Рекурсивный вывод потомков
+    if (root->left || root->right){
+        std::string new_prefix = prefix + (is_left ? "│   " : "    ");
+        if (root->left) print_tree_helper(root->left, new_prefix, true);
+        if (root->right) print_tree_helper(root->right, new_prefix, false);
+    }
+}
+
+void fbt_print_inorder(TreeNode* root){
+    if (!root){
+        std::cout << "Дерево пустое" << std::endl;
+        return;
+    }
+    
+    std::cout << "Структура дерева:" << std::endl;
+    print_tree_helper(root, "", false);
+    
+    // Дополнительно выводим симметричный обход в линейном виде
+    std::cout << "Симметричный обход (inorder): ";
+    fbt_print_inorder_linear(root);
+    std::cout << std::endl;
+}
+
+// Линейный вывод строк
+void fbt_print_inorder_linear(TreeNode* root){
     if (root){
-        fbt_print_inorder(root->left);
-        std::cout << root->data << " ";
-        fbt_print_inorder(root->right);
+        fbt_print_inorder_linear(root->left);
+        std::cout << root->data << " ";  // Выводим строку
+        fbt_print_inorder_linear(root->right);
     }
 }
 
